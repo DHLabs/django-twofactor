@@ -2,7 +2,6 @@ from base64 import b32encode
 from binascii import hexlify
 from urllib import urlencode
 from twofactor.encutil import encrypt, decrypt, _gen_salt
-from oath import accept_totp
 from django.conf import settings
 
 # Get best `random` implementation we can.
