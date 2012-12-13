@@ -18,13 +18,13 @@ class UserAuthToken(models.Model):
 
     def save( self ):
         self.encrypted_seed = encrypt_value( random_seed() )
-        print b32encode( self.encrypted_seed )
 
     def check_auth_code(self, auth_code):
         """
         Checks whether `auth_code` is a valid authentication code for this
         user, at the current time.
         """
+
         secret_key = b32encode( decrypt_value( self.encrypted_seed ) )
         val = googauth.verify_time_based( secret_key,
                                           str( auth_code ), window=5 )
