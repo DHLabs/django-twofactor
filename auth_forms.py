@@ -10,11 +10,9 @@ ERROR_MESSAGE = _("Please enter the correct username, password and "
 
 
 class TwoFactorAuthenticationForm(AuthenticationForm):
-    token = forms.IntegerField(label=_("Authentication Code"),
-        widget=forms.TextInput(attrs={'maxlength': '6'}),
-        min_value=1, max_value=999999,
-        required=False
-    )
+    token = forms.CharField( label=_("Authentication Code"),
+                             widget=forms.TextInput(attrs={'maxlength': '6'}),
+                             required=False )
 
     def clean(self):
         username = self.cleaned_data.get('username')

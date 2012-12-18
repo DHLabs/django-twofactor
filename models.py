@@ -1,10 +1,17 @@
-from django.db import models
-from twofactor.util import encrypt_value, decrypt_value, get_google_url
-from twofactor.util import random_seed
+import datetime
+import googauth
+import hmac
+import uuid
+
 from base64 import b32encode
+
+from django.contrib.auth.models import User
+from django.db import models
+
 from socket import gethostname
 
-import googauth
+from twofactor.util import encrypt_value, decrypt_value, get_google_url
+from twofactor.util import random_seed
 
 
 class UserAuthToken(models.Model):
@@ -51,3 +58,23 @@ class UserAuthToken(models.Model):
         and similar soft token devices.
         """
         return b32encode(decrypt_value(self.encrypted_seed))
+
+
+class UserAPIToken( models.Model ):
+    user        = models.ForeignKey( User )
+    name        = models.CharField( max_length=256, blank=True, default='' )
+    key         = models.CharField( max_length=256, blank=True, default='' )
+    created     = models.DateTimeField( default=datetime.datetime.now )
+
+    def __unicode__( self ):
+        return u'%s for %s' % ( self.key, self.user )
+
+    def save( self, *args, **kwargs ):
+        if not self.key:
+            self.key = self.generated_key()
+
+        return super( UserAPIToken, self ).save( *args, **kwargs )
+
+    def generated_key( self ):
+        new_uuid = uuid.uuid4()
+        return hmac.new( str( new_uuid ) ).hexdigest()
