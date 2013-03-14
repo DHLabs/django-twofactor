@@ -6,13 +6,14 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from twofactor.models import UserAuthToken
 
+
 class TwoFactorAuthAdminSite(AdminSite):
     login_form = TwoFactorAdminAuthenticationForm
     login_template = "twofactor_admin/twofactor_login.html"
     password_change_template = "twofactor_admin/registration/password_change_form.html"
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
+        from django.conf.urls import patterns, url
 
         urlpatterns = patterns('twofactor.admin_views',
             url(r'^twofactor_auth_setup/$',
