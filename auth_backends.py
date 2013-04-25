@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
+from django.conf import settings
+
 from twofactor.models import UserAuthToken
 
 
@@ -7,8 +9,13 @@ class TwoFactorAuthBackend(ModelBackend):
     def authenticate(self, username=None, password=None, token=None):
 
         # Validate username and password first
-        user_or_none = super(TwoFactorAuthBackend, self)\
-                            .authenticate( username, password)
+        user_or_none = super( TwoFactorAuthBackend, self )\
+                        .authenticate( username, password )
+
+        # Don't bother checking for two-factor tokens when running in a
+        # DEBUG environment.
+        if settings.DEBUG:
+            return user_or_none
 
         if user_or_none and isinstance(user_or_none, User):
             # Got a valid login. Now check token.
