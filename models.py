@@ -35,7 +35,7 @@ class UserAuthToken(models.Model):
         secret_key = b32encode( decrypt_value( self.encrypted_seed ) )
         val = googauth.verify_time_based( secret_key,
                                           str( auth_code ), window=5 )
-        return val != None
+        return val is not None
 
     def google_url(self, name=None):
         """
