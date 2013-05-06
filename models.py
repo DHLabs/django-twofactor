@@ -23,8 +23,9 @@ class UserAuthToken(models.Model):
     updated_datetime = models.DateTimeField(
         verbose_name="last updated", auto_now=True)
 
-    def save( self ):
+    def save( self, *args, **kwargs ):
         self.encrypted_seed = encrypt_value( random_seed() )
+        return super( UserAuthToken, self ).save( *args, **kwargs )
 
     def check_auth_code(self, auth_code):
         """
