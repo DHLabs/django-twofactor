@@ -14,7 +14,7 @@ class TwoFactorAuthBackend(ModelBackend):
 
         # Don't bother checking for two-factor tokens when running in a
         # DEBUG environment.
-        if settings.DEBUG:
+        if settings.DEBUG or settings.TESTING:
             return user_or_none
 
         if user_or_none and isinstance(user_or_none, User):
